@@ -1,98 +1,91 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React from "react";
+import {View, Text, StyleSheet, TouchableOpacity, StatusBar, Alert,} from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function HomeScreen(){
 
-export default function HomeScreen() {
+  function iniciarFichario(){
+    Alert.alert('TrainingApp', 'Em breve vamos criar o fichário!');
+  }
+
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.container}>
+      <StatusBar barStyle="light-content"/>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <View style={styles.conteudo}>
+        <Text style={styles.icone}>🏋️</Text>
+
+        <Text style={styles.titulo}>
+          TrainingApp
+        </Text>
+
+        <Text style={styles.subtitulo}>
+          SEU TREINO. SUA EVOLUÇÃO.
+        </Text>
+
+        <Text style={styles.descricao}>
+          Treinos personalizados para todos os níveis, do iniciante ao avançado.
+        </Text>
+
+        <TouchableOpacity
+        style={styles.botao} onPress={iniciarFichario}>
+
+          <Text style={styles.textoBotao}>
+            COMEÇAR MEU TREINO →
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: '#101827',
+    justifyContent: 'center',
+    padding: 24,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+
+  conteudo:{
+    alignItems:'center',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  icone:{
+    fontSize:65,
+    marginBottom:25,
   },
-});
+  titulo:{
+    fontSize:36,
+    fontWeight: 'bold',
+    color:'#FFFFFF',
+    marginBottom:10,
+  },
+
+  subtitulo:{
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#50D9A0',
+    marginBottom: 20,
+  },
+  descricao:{
+    fontSize:16,
+    color:'#C5CDDA',
+    textAlign:'center',
+    marginBottom: 40,
+    lineHeight: 25,
+  },
+  botao:{
+    backgroundColor: '#50D9A0',
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    width: '100%',
+    alignItems:'center',
+  },
+
+  textoBotao:{
+    color:'#101827',
+    fontSize:16,
+    fontWeight:'bold',
+  },
+})
