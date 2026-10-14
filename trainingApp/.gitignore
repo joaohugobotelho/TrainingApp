@@ -41,3 +41,9 @@ app-example
 # generated native folders
 /ios
 /android
+
+# DJANGO 
+backend/venv/
+backend/.env
+backend/db.sqlite3
+backend/**/__pycache__/
