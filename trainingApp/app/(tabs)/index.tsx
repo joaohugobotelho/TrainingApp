@@ -1,5 +1,7 @@
+import { Redirect } from "expo-router";
 import React from "react";
 import {View, Text, StyleSheet, TouchableOpacity, StatusBar, Alert,} from "react-native";
+
 
 export default function HomeScreen(){
 

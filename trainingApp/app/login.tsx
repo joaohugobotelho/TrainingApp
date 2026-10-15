@@ -1,205 +1,347 @@
-import React,{useState} from "react"
 
-import {View, Text, TextInput, TouchableOpacity, StyleSheet,ActivityIndicator,
-  KeyboardAvoidingView, Platform, } from 'react-native';
+import React, { useState } from 'react';
+
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+
 import { useRouter } from 'expo-router';
+import { useTema } from '../temas/TemaContext';
 
+export default function Login() {
+  const router = useRouter();
 
-export default function Login(){
-    const router = useRouter();
+  const { modo, cores, alternarTema } = useTema();
 
-    const [email, setEmail] = useState('');
-    const [senha, setSenha]= useState('');
-    const [mostrarSenha, setMostrarSenha] = useState(false);
-    const [carregando, setCarregando] = useState(false);
-    const [erro, setErro]= useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState('');
 
-
-    function entrar(){
-        if (!email.trim() || !senha){
-            setErro('Preencha seu e-mail e sua senha.');
-            return;
-        }
-
-        setErro('');
-        setCarregando(true);
-
-         console.log('Login pronto para integração:', email);
-
-         setCarregando(false);
-         setErro('Tela pronta! Agora vamos conectar o login ao Django.'
-         );
+  function entrar() {
+    if (!email.trim() || !senha) {
+      setErro('Preencha seu e-mail e sua senha.');
+      return;
     }
 
-    return (
-        <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    setErro('');
+    setCarregando(true);
+
+    // Ainda vamos conectar este botão à API Django.
+    console.log('Login pronto para integração:', email);
+
+    setCarregando(false);
+    setErro('Login ainda não conectado ao Django.');
+  }
+
+  return (
+    <KeyboardAvoidingView
+      style={[
+        styles.container,
+        { backgroundColor: cores.fundo },
+      ]}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.conteudo}>
-            <Text style={styles.icone}>🏋️</Text> 
 
-            <Text style={styles.titulo}>TrainingApp</Text>
+          {/* BOTÃO DE ALTERAR TEMA */}
+          <TouchableOpacity
+            onPress={alternarTema}
+            style={styles.botaoTema}
+          >
+            <Text
+              style={[
+                styles.textoTema,
+                { color: cores.destaque },
+              ]}
+            >
+              {modo === 'escuro'
+                ? '☀️ Modo claro'
+                : '🌙 Modo escuro'}
+            </Text>
+          </TouchableOpacity>
 
-            <Text style={styles.subtitulo}>ENTRE NA SUA CONTA</Text>
+          <Text style={styles.icone}>🏋️</Text>
 
-            <Text style={styles.descricao}>Acesse suas fichas e acomonhe sua evolução.</Text>
+          <Text
+            style={[
+              styles.titulo,
+              { color: cores.texto },
+            ]}
+          >
+            TrainingApp
+          </Text>
 
-            <Text style={styles.label}>E-mail</Text>
-            <TextInput
-            style={styles.input}
+          <Text
+            style={[
+              styles.subtitulo,
+              { color: cores.destaque },
+            ]}
+          >
+            ENTRE NA SUA CONTA
+          </Text>
+
+          <Text
+            style={[
+              styles.descricao,
+              { color: cores.secundario },
+            ]}
+          >
+            Acesse suas fichas e acompanhe sua evolução.
+          </Text>
+
+          {/* EMAIL */}
+          <Text
+            style={[
+              styles.label,
+              { color: cores.texto },
+            ]}
+          >
+            E-mail
+          </Text>
+
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: cores.superficie,
+                borderColor: cores.borda,
+                color: cores.texto,
+              },
+            ]}
             placeholder="Digite seu e-mail"
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={cores.secundario}
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
+          />
+
+          {/* SENHA */}
+          <Text
+            style={[
+              styles.label,
+              { color: cores.texto },
+            ]}
+          >
+            Senha
+          </Text>
+
+          <View
+            style={[
+              styles.senhaContainer,
+              {
+                backgroundColor: cores.superficie,
+                borderColor: cores.borda,
+              },
+            ]}
+          >
+            <TextInput
+              style={[
+                styles.inputSenha,
+                { color: cores.texto },
+              ]}
+              placeholder="Digite sua senha"
+              placeholderTextColor={cores.secundario}
+              value={senha}
+              onChangeText={setSenha}
+              secureTextEntry={!mostrarSenha}
+              autoCapitalize="none"
             />
 
-            <Text style={styles.label}>Senha</Text>
-            <View style={styles.senhaContainer}>
-                <TextInput
-                style={styles.inputSenha}
-                placeholder="Digite sua senha"
-                placeholderTextColor="#94A3B8"
-                value={senha}
-                onChangeText={setSenha}
-                secureTextEntry={!mostrarSenha}
-                autoCapitalize="none"
-                />
-
-                <TouchableOpacity
-                onPress={() => setMostrarSenha(!mostrarSenha)}
-                >   
-                    <Text style={styles.mostrarSenha}>
-                        {mostrarSenha ? 'Ocultar': 'Mostrar'}
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-            {erro!== '' && (
-                <Text style={styles.erro}>{erro}</Text>
-            )}
-
             <TouchableOpacity
-            style={styles.botao}
+              onPress={() => setMostrarSenha(!mostrarSenha)}
+            >
+              <Text
+                style={[
+                  styles.mostrarSenha,
+                  { color: cores.destaque },
+                ]}
+              >
+                {mostrarSenha ? 'Ocultar' : 'Mostrar'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* MENSAGEM DE ERRO */}
+          {erro !== '' && (
+            <Text style={styles.erro}>{erro}</Text>
+          )}
+
+          {/* BOTÃO ENTRAR */}
+          <TouchableOpacity
+            style={[
+              styles.botao,
+              { backgroundColor: cores.destaque },
+            ]}
             onPress={entrar}
             disabled={carregando}
-            >
-                {carregando ? (
-                    <ActivityIndicator color="#101827" />
-                ) : (
-                    <Text style={styles.textoBotao}>
-                        ENTRAR →
-                    </Text>
-                )}        
-            </TouchableOpacity>
+          >
+            {carregando ? (
+              <ActivityIndicator color={cores.textoBotao} />
+            ) : (
+              <Text
+                style={[
+                  styles.textoBotao,
+                  { color: cores.textoBotao },
+                ]}
+              >
+                ENTRAR →
+              </Text>
+            )}
+          </TouchableOpacity>
 
-            <TouchableOpacity
-            onPress={()=> router.push('/cadastro')}
+          {/* CADASTRO */}
+          <TouchableOpacity
+            onPress={() => router.push('/cadastro')}
+          >
+            <Text
+              style={[
+                styles.cadastro,
+                { color: cores.secundario },
+              ]}
             >
-                <Text style={styles.cadastro}>
-                    Não tem uma conta?{' '}
-                    <Text style={styles.link}>Cadastre-se</Text>
-                </Text>
-            </TouchableOpacity>
+              Não tem uma conta?{' '}
+              <Text
+                style={[
+                  styles.link,
+                  { color: cores.destaque },
+                ]}
+              >
+                Cadastre-se
+              </Text>
+            </Text>
+          </TouchableOpacity>
+
         </View>
+      </ScrollView>
     </KeyboardAvoidingView>
-    );
+  );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#101827',
+  },
+
+  scroll: {
+    flexGrow: 1,
     justifyContent: 'center',
     padding: 24,
   },
+
   conteudo: {
     width: '100%',
+    maxWidth: 440,
+    alignSelf: 'center',
   },
+
+  botaoTema: {
+    alignSelf: 'flex-end',
+    padding: 12,
+    marginBottom: 10,
+  },
+
+  textoTema: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
   icone: {
     fontSize: 52,
     textAlign: 'center',
     marginBottom: 12,
   },
+
   titulo: {
-    color: '#FFFFFF',
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
   subtitulo: {
-    color: '#50D9A0',
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 8,
   },
+
   descricao: {
-    color: '#AAB8CB',
     fontSize: 15,
     textAlign: 'center',
     marginTop: 14,
     marginBottom: 35,
   },
+
   label: {
-    color: '#FFFFFF',
     fontSize: 15,
     marginBottom: 8,
+    fontWeight: '500',
   },
+
   input: {
-    backgroundColor: '#1B293B',
     borderRadius: 12,
     padding: 17,
-    color: '#FFFFFF',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#344256',
   },
+
   senhaContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1B293B',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#344256',
     marginBottom: 18,
   },
+
   inputSenha: {
     flex: 1,
     padding: 17,
-    color: '#FFFFFF',
   },
+
   mostrarSenha: {
-    color: '#50D9A0',
     paddingHorizontal: 12,
+    fontWeight: '600',
   },
+
   erro: {
-    color: '#FCA5A5',
+    color: '#EF4444',
     fontSize: 13,
     marginBottom: 15,
   },
+
   botao: {
-    backgroundColor: '#50D9A0',
     borderRadius: 12,
     padding: 18,
     alignItems: 'center',
     marginTop: 8,
   },
+
   textoBotao: {
-    color: '#101827',
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   cadastro: {
-    color: '#AAB8CB',
     textAlign: 'center',
     marginTop: 25,
   },
+
   link: {
-    color: '#50D9A0',
     fontWeight: 'bold',
   },
 });
-
