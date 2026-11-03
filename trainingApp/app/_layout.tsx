@@ -1,20 +1,21 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from '@react-navigation/native';
+
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+
 import { TemaProvider, useTema } from '../temas/TemaContext';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+function Navegacao() {
+  const { modo } = useTema();
 
-function Nvavegacao(){
-
-  const {modo} = useTema();
-
-  return(
-    <ThemeProvider value={modo === 'escuro' ? DarkTheme : DefaultTheme}>
+  return (
+    <ThemeProvider
+      value={modo === 'escuro' ? DarkTheme : DefaultTheme}
+    >
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(tabs)" />
@@ -28,11 +29,10 @@ function Nvavegacao(){
   );
 }
 
-export default function RootLayout(){
-  return(
+export default function RootLayout() {
+  return (
     <TemaProvider>
-      <Nvavegacao />
+      <Navegacao />
     </TemaProvider>
-  )
+  );
 }
-

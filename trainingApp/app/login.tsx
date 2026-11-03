@@ -12,6 +12,7 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { salvarSessao } from '../services/sessao';
 
 import { useRouter } from 'expo-router';
 import { useTema } from '../temas/TemaContext';
@@ -27,20 +28,68 @@ export default function Login() {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState('');
 
-  function entrar() {
-    if (!email.trim() || !senha) {
-      setErro('Preencha seu e-mail e sua senha.');
+  async function entrar() {
+    
+    if(!email.trim()|| !senha){
+      setErro('Preencha seu e-mail e sua senha');
       return;
     }
 
-    setErro('');
     setCarregando(true);
 
-    // Ainda vamos conectar este botão à API Django.
-    console.log('Login pronto para integração:', email);
+    try {
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-    setCarregando(false);
-    setErro('Login ainda não conectado ao Django.');
+      if(!apiUrl) {
+        setErro('Endereço da API não configurado.')
+        return;
+      }
+
+      const resposta = await fetch(
+        `${apiUrl}/api/usuarios/login/`,
+        {
+          method: 'POST',
+          headers: {
+            'COntent-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email.trim().toLowerCase(),
+            password: senha,
+          }),
+        }
+      );
+
+      const dados = await resposta.json();
+      
+
+      if(!resposta.ok){
+        setErro(
+          dados.detail ||
+          dados.non_field_erros?.[0] ||
+          'E-mail ou senha incorretos.'
+        );
+        return;
+      
+      }
+      if(!dados.access || !dados.refresh){
+        setErro('O servidor não retornou os dados da autenticação.');
+        return;
+      }
+
+      await salvarSessao({
+        access:dados.access,
+       refresh: dados.refresh,
+      });
+      setErro('');
+      setSenha('');
+
+    router.replace('/(tabs)');
+
+    } catch (error) {
+      console.error('Erro ao fazer login', error);
+    } finally {
+      setCarregando(false);
+    }
   }
 
   return (
