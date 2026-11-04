@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,11 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
+import { obterTokenValido } from '@/services/autenticacao';
+
 
 type Respostas = {
   idade: string;
@@ -134,7 +137,8 @@ export default function Fichario() {
   const [etapa, setEtapa] = useState(0);
   const [revisao, setRevisao] = useState(false);
   const [erro, setErro] = useState('');
-
+  const [verificandoSessao, setVerificandoSessao] = useState(true);
+  const [autenticado, setAutenticado] = useState(false);
   const [respostas, setRespostas] = useState<Respostas>({
     idade: '',
     objetivo: '',
@@ -147,6 +151,39 @@ export default function Fichario() {
     descricaoLimitacoes: '',
     prioridade: '',
   });
+useEffect(() => {
+  let ativo = true;
+
+  async function verificarAutenticacao() {
+    try{
+      const token = await obterTokenValido();
+
+      if(ativo) {
+        setAutenticado(Boolean(token));
+      }
+    } catch (error) {
+      console.error('Erro ao verificar sessão:', error);
+
+      if(ativo) {
+        setAutenticado(false);
+      }
+    } finally {
+      if (ativo) {
+        setVerificandoSessao(false);
+      }
+    }
+  } 
+
+  verificarAutenticacao();
+
+  
+
+  return () => {
+    ativo = false;
+  };
+}, []);
+
+
 
   const perguntaAtual = perguntas[etapa];
 
@@ -359,6 +396,18 @@ export default function Fichario() {
           )}
       </>
     );
+  }
+
+  if (verificandoSessao) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#101827' }}>
+        <ActivityIndicator size="large" color="#50D9A0" />
+      </View>
+    );
+  }
+
+  if (!autenticado) {
+    return <Redirect href="/login" />;
   }
 
   return (
